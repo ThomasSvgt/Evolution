@@ -29,6 +29,7 @@ const items = ref([
     {value: 'users', text :'Utilisateurs'},
     {value: 'books', text :'Livres'},
     {value: 'products', text: 'Produits'},
+    {value: 'informations', text: 'Informations'},
 ])
 
 let repository = ref(null)

@@ -74,7 +74,7 @@
 
                             <template v-slot:body-cell-active="props">
                                 <q-td :props="props">
-                                    <q-icon name="circle" color="green-7" v-if="props.row.active === true"/>
+                                    <q-icon name="circle" color="green-7" v-if="props.row.active === 1"/>
                                     <q-icon v-else name="circle" color="red-8"/>
                                 </q-td>
                             </template>
@@ -104,6 +104,20 @@
                                     >
                                         <q-tooltip class="bg-grey-8" style="font-size: 13px">
                                             Supprimer
+                                        </q-tooltip>
+                                    </q-btn>
+                                    &nbsp;
+
+                                    <q-btn
+                                        color="green-8"
+                                        padding="sm"
+                                        size="sm"
+                                        class="cursor-pointer"
+                                        icon="fa-solid fa-eye"
+                                        @click="openViewDialog(props.row)"
+                                    >
+                                        <q-tooltip class="bg-grey-8" style="font-size: 13px">
+                                            Visualiser
                                         </q-tooltip>
                                     </q-btn>
                                 </q-td>
@@ -231,6 +245,38 @@
 
             </q-dialog>
 
+            <q-dialog v-model="viewDialog"
+                      persistent
+                      transition-show="scale"
+                      transition-hide="scale">
+
+                <q-card class="bg-radius report-style" style="width: 1000px; height: 400px">
+
+                    <q-card-section class="bg-primary text-white">
+                        <div class="text-h6">Visualisation de l'utilisateur</div>
+                    </q-card-section>
+                    <q-card-section class="bg-white">
+                        UTIISATEURS<br><br>
+                           Name : {{userId.name}}<br>
+                           Username : {{userId.username}}<br>
+                           E-mail : {{userId.email}}<br><br>
+                            INFORMATIONS<br><br>
+                           Phone : {{userId.phone}}<br>
+                           Adress : {{userId.adress}}<br>
+                           City : {{userId.city}}<br>
+                           Zip code : {{userId.zip_code}}<br>
+
+                    </q-card-section>
+
+                    <q-card-section class="bg-white absolute" style="bottom: 0; right: 10px">
+                        <q-btn label="Fermer" color="grey-8" @click="closeViewDialog"/>
+
+                    </q-card-section>
+
+                </q-card>
+
+            </q-dialog>
+
         </template>
 
     </view-layout>
@@ -256,6 +302,10 @@ let props = defineProps({
     datatable: {
         type: Object,
         required: true,
+    },
+    userView: {
+        type: Object,
+        required: true,
     }
 })
 
@@ -279,6 +329,7 @@ function openSuppressionDialog(props){
     selectedUser.value = props
     suppressionDialog.value = true
 }
+
 
 function deleteUser(){
     router.post(`users/${selectedUser.value.id}/delete`, {}, {
@@ -308,6 +359,7 @@ function deleteUser(){
 }
 
 let editionDialog = ref(false);
+let viewDialog = ref(false);
 
 function closeEditionDialog(){
     editionDialog.value = false;
@@ -320,6 +372,28 @@ function openEditionDialog(props){
     selectedUser.value = props
     editionDialog.value = true
     form.value = {...props}
+}
+let userViewSelect = ref(null);
+
+let userId = ref(null);
+
+function openViewDialog(props){
+    selectedUser.value = props;
+    userId.value = this.props.userView.find(user => user.userId === selectedUser.value.id);
+    if(userId.value != undefined)
+    {
+        viewDialog.value = true;
+    }
+    else{
+        $q.notify({
+            position: 'top',
+            color: 'red',
+            message: '<span style="color: white; font-size:18px">Aucune information de disponible pour cette utilisateur</span>',
+            html: true
+        });
+        viewDialog.value = false;
+    }
+
 }
 
 
@@ -353,6 +427,13 @@ let creationDialog = ref(false);
 
 function closeCreationDialog(){
     creationDialog.value = false;
+    clearErrors()
+    clearForm()
+    resetSelectedUser();
+}
+
+function closeViewDialog(){
+    viewDialog.value = false;
     clearErrors()
     clearForm()
     resetSelectedUser();

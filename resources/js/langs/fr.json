@@ -11,6 +11,9 @@
         },
         "Products": {
             "title": "Produits"
+        },
+        "informations": {
+            "title": "Informations"
         }
     }
 }
