@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Book\ShowBookListViewController;
 use App\Http\Controllers\Home\HomeController;
+use App\Http\Controllers\Products\DeleteProductController;
+use App\Http\Controllers\Products\EditProductController;
 use App\Http\Controllers\Products\ShowProductListViewController;
 use App\Http\Controllers\User\CreateUserController;
 use App\Http\Controllers\User\DeleteUserController;
@@ -31,3 +33,5 @@ Route::post('repositories/users/{user}/delete', DeleteUserController::class);
 Route::post('repositories/users/{user}/edit', EditUserController::class);
 Route::post('repositories/users/create', CreateUserController::class);
 
+Route::post('repositories/products/{product}/delete', DeleteProductController::class);
+Route::post('repositories/products/{product}/edit', EditProductController::class);
